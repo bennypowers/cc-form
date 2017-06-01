@@ -66,11 +66,17 @@ Behavior wrapper for the Stripe library
       if (response.error) {
         if (this.debug) console.log(response.error);
         this.validationResult = response.error.message;
-        this.fire('stripe-card-validation-failed', { error: response.error, response: response } );
+        let error = response.error;
+        this.dispatchEvent(new CustomEvent('stripe-card-validation-failed', 
+          {bubbles: true, composed: true, detail: {error, response}}
+        ));
         return;
       }
       if (this.debug) console.log(response.id);
-      this.fire('stripe-card-validation-succeeded', { token: response.id, response: response });
+      let token = response.id;
+      this.dispatchEvent(new CustomEvent('stripe-card-validation-succeeded',
+        {bubbles: true, composed: true, detail: {token, response}}
+      ));
       this.validationResult = response;
     },
 
